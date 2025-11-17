@@ -64,7 +64,7 @@ if __name__ == "__main__":
         description="Compute the weighted average of squares of a list of numbers."
     )
     parser.add_argument(
-        "--numbers",
+        "numbers",
         nargs="+",
         help="List of numbers (whitespace separated if multiple)."
     )
