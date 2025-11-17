@@ -1,13 +1,14 @@
 """Computation of weighted average of squares."""
+
 from argparse import ArgumentParser
 
 
 def average_of_squares(list_of_numbers, list_of_weights=None):
-    """ Return the weighted average of a list of values.
-    
+    """Return the weighted average of a list of values.
+
     By default, all values are equally weighted, but this can be changed
     by the list_of_weights argument.
-    
+
     Example:
     --------
     >>> average_of_squares([1, 2, 4])
@@ -20,22 +21,22 @@ def average_of_squares(list_of_numbers, list_of_weights=None):
 
     """
     if list_of_weights is not None:
-        assert len(list_of_weights) == len(list_of_numbers), \
+        assert len(list_of_weights) == len(list_of_numbers), (
             "weights and numbers must have same length"
+        )
         effective_weights = list_of_weights
     else:
         effective_weights = [1] * len(list_of_numbers)
     squares = [
         weight * number * number
-        for number, weight
-        in zip(list_of_numbers, effective_weights)
+        for number, weight in zip(list_of_numbers, effective_weights)
     ]
-    return sum(squares)
+    return sum(squares) / len(list_of_numbers)
 
 
 def convert_numbers(list_of_strings):
     """Convert a list of strings into numbers, ignoring whitespace.
-    
+
     Example:
     --------
     >>> convert_numbers(["4", " 8 ", "15 16", " 23    42 "])
@@ -52,30 +53,32 @@ def convert_numbers(list_of_strings):
 
 
 if __name__ == "__main__":
-    """numbers_strings = ["1","2","4"]
-    weight_strings = ["1","1","1"]        
-    
-    numbers = convert_numbers(numbers_strings)
-    weights = convert_numbers(weight_strings)
-    
-    result = average_of_squares(numbers, weights)"""
-
     parser = ArgumentParser(
-        description="Compute the weighted average of squares of a list of numbers."
+        description="Compute the weighted sum of squares of numbers read from files."
     )
-    # Make `numbers` a positional argument so the user can call:
-    #   python squares.py 1 2 3
+
     parser.add_argument(
-        "numbers",
-        nargs="+",
-        help="List of numbers (provide one or more numeric values)."
+        "numbers_file",
+        help="Path to a text file containing numbers (one or more per line).",
     )
+
     parser.add_argument(
         "--weights",
-        nargs="*",
-        help="Optional list of weights (whitespace separated if multiple)."
+        dest="weights_file",
+        help="Path to a text file containing weights (one or more per line).",
     )
+
     arguments = parser.parse_args()
-    squares = convert_numbers(arguments.numbers)
-    weights = convert_numbers(arguments.weights) if arguments.weights else None
-    print(average_of_squares(squares, weights))
+
+    with open(arguments.numbers_file, "r", encoding="utf-8") as f:
+        number_strings = f.readlines()
+    numbers = convert_numbers(number_strings)
+
+    if arguments.weights_file is not None:
+        with open(arguments.weights_file, "r", encoding="utf-8") as f:
+            weight_strings = f.readlines()
+        weights = convert_numbers(weight_strings)
+    else:
+        weights = None
+
+    print(average_of_squares(numbers, weights))
