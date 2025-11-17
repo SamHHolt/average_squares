@@ -1,5 +1,5 @@
 """Computation of weighted average of squares."""
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Action
 
 
 def average_of_squares(list_of_numbers, list_of_weights=None):
@@ -63,19 +63,17 @@ if __name__ == "__main__":
     parser = ArgumentParser(
         description="Compute the weighted average of squares of a list of numbers."
     )
-    # Make `numbers` a positional argument so the user can call:
-    #   python squares.py 1 2 3
     parser.add_argument(
         "numbers",
-        nargs="+",
-        help="List of numbers (provide one or more numeric values)."
+        type=open,
+        help="Text file of a list of numbers (One number per line)."
     )
     parser.add_argument(
         "--weights",
-        nargs="*",
-        help="Optional list of weights (whitespace separated if multiple)."
+        type=open,
+        help="Optional text file of a list of weights (One weight per line)."
     )
     arguments = parser.parse_args()
-    squares = convert_numbers(arguments.numbers)
-    weights = convert_numbers(arguments.weights) if arguments.weights else None
+    squares = convert_numbers(arguments.numbers.read().split("\n"))
+    weights = convert_numbers(arguments.weights.read().split("\n")) if arguments.weights else None
     print(average_of_squares(squares, weights))
