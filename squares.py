@@ -63,17 +63,19 @@ if __name__ == "__main__":
     parser = ArgumentParser(
         description="Compute the weighted average of squares of a list of numbers."
     )
+    # Make `numbers` a positional argument so the user can call:
+    #   python squares.py 1 2 3
     parser.add_argument(
-        "--numbers",
+        "numbers",
         nargs="+",
-        help="List of numbers (whitespace separated if multiple)."
+        help="List of numbers (provide one or more numeric values)."
     )
     parser.add_argument(
         "--weights",
         nargs="*",
         help="Optional list of weights (whitespace separated if multiple)."
     )
-    arguments=parser.parse_args()
+    arguments = parser.parse_args()
     squares = convert_numbers(arguments.numbers)
     weights = convert_numbers(arguments.weights) if arguments.weights else None
     print(average_of_squares(squares, weights))
